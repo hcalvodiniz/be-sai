@@ -8,6 +8,10 @@ class Proveedor extends CI_Controller {
 		$this->load->model('proveedor_model', 'proveedor');
 	}
 
+	/**
+	 * Funcion que retorna un arreglo de recursos del modelo Proveedor
+	 * @return Array
+	 **/
 	public function index() {
 		$proveedores = $this->proveedor->all();
 		$this->output
@@ -17,6 +21,10 @@ class Proveedor extends CI_Controller {
 			->set_output(json_encode($proveedores));
 	}
 
+	/**
+	 * Funcion que retorna las propiedades de un recurso del modelo Proveedor
+	 * @return Array
+	 **/
 	public function show($id) {
 		$proveedor = $this->proveedor->find($id);
 		$this->output
@@ -30,6 +38,10 @@ class Proveedor extends CI_Controller {
 			]));
 	}
 
+	/**
+	 * Funcion que retorna un arreglo de objetos con un formato particular para uso del Front End
+	 * @return Array
+	 **/
 	public function get_list() {
 		$proveedores = $this->proveedor->all();
 		$proveedores = $this->pluck($proveedores, 'razon_social', 'id');

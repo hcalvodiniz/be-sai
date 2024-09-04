@@ -8,6 +8,10 @@ class Prioridad extends CI_Controller {
 		$this->load->model('prioridad_model', 'prioridad');
 	}
 
+	/**
+	 * Funcion que retorna un arreglo de recursos del modelo Prioridad
+	 * @return Array
+	 **/
 	public function index() {
 		$data = $this->prioridad->all();
 		return $this->output
@@ -17,6 +21,11 @@ class Prioridad extends CI_Controller {
 				->set_output(json_encode($data));
 	}
 
+	/**
+	 * Funcion para guardar propiedades del modelo Prioridad, se hace uso de funciones de la libreria "Form Validation"
+	 * @return Arreglo donde se encuentra el estado de la operación, un mensaje que puede contener los errores de la validación en caso de error
+	 * y el retorno de las propiedades guardados de el modelo.
+	 **/
 	public function store() {
 		$this->load->library('form_validation');
 
@@ -53,6 +62,11 @@ class Prioridad extends CI_Controller {
 					]));
 	}
 
+	/**
+	 * Funcion que actualiza las propiedades del modelo Prioridad
+	 * @return Arreglo donde se encuentra el estado de la operación, un mensaje que puede contener los errores de la validación en caso de error
+	 * y el retorno de las propiedades guardados de el modelo.
+	 **/
 	public function update() {
 		$this->load->library('form_validation');
 
@@ -92,6 +106,10 @@ class Prioridad extends CI_Controller {
 				]));
 	}
 
+	/**
+	 * Funcion que elimina el recurso del modelo Prioridad | Hay una validacion para el metodo de solicitud, para saber que la manden con el metodo correcto
+	 * @return Arreglo donde se encuentra el estado de la operación y un mensaje.
+	 **/
 	public function destroy($id) {
 		if($_SERVER['REQUEST_METHOD'] === 'DELETE' || $_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 			$this->prioridad->delete($id);
@@ -110,6 +128,10 @@ class Prioridad extends CI_Controller {
 		}
 	}
 
+	/**
+	 * Funcion que retorna un arreglo de los recursos del modelo Prioridad con un formato en particular para el front end
+	 * @return Array
+	 **/
 	public function get_list() {
 		$data = $this->prioridad->all();
 		$data = $this->pluck($data, 'nombre', 'id', TRUE, 'color');
@@ -125,7 +147,11 @@ class Prioridad extends CI_Controller {
 				]));
 	}
 
-	public function color_check($value) {
+	/**
+	 * Funcion para validar que el valor de la variable es un valor hexadecimal
+	 * @return boolean FALSE | TRUE
+	 **/
+	protected function color_check($value) {
 		$this->load->library('form_validation');
 		if(empty($value)) {
 			$this->form_validation->set_message('color_check', 'El Campo {field} es requerido');

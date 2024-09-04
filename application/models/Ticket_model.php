@@ -88,6 +88,7 @@ class Ticket_model extends CI_Model {
 		$this->db->join('categorias c', 't.categoria_id = c.id', 'left');
 		$this->db->join('categorias ch', 'c.padre_id = ch.id', 'left');
 		$this->db->where_in('l.codigo', explode(',', $locales));
+		$this->db->order_by('t.fecha_hora','DESC');
 		$result = $this->db->get();
 		return $result->result_array();
 	}

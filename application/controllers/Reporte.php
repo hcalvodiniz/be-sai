@@ -8,6 +8,10 @@ class Reporte extends CI_Controller {
 		$this->load->database('default');
 	}
 
+	/**
+	 * Funcion que retorna el resultado de una consulta dependiendo la solicitud.
+	 * @return Array
+	 **/
 	public function reporte_data() {
 		$post = $this->input->post();
 		$where = '';
@@ -122,6 +126,10 @@ class Reporte extends CI_Controller {
 			->set_output(json_encode($data));
 	}
 
+	/**
+	 * Funcion que le da formato al arreglo para uso del Front End
+	 * @return Array
+	 **/
 	protected function serializeData($result) {
 		$labels = [];
 		$counts = [];

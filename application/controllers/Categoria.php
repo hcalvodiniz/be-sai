@@ -7,6 +7,11 @@ class Categoria extends CI_Controller {
 		$this->load->model('categoria_model','categoria');
 	}
 
+	/**
+	 * Funcion que devuelve un arreglo de objetos que contiene el modelo Categoria
+	 * Hace uso de funciones de salida para poder regresar la informacion en formato JSON
+	 * @return Array of Objects
+	**/
 	public function index() {
 		$data = $this->categoria->all();
 		return $this->output
@@ -16,6 +21,12 @@ class Categoria extends CI_Controller {
 			->set_output(json_encode($data));
 	}
 
+	/**
+	 * Funcion para validar y guardar el recurso que se va a salvar como parte del modelo de Categoria
+	 * Hace uso de la libreria "Form Validation" para poder validar el contenido de cada campo.
+	 * @return Arreglo donde se encuentra el estado de la operación, un mensaje que puede contener los errores de la validación en caso de error
+	 * y el retorno de los datos guardados en el modelo.
+	**/
 	public function store() {
 		$this->load->library('form_validation');
 		$_POST = json_decode(file_get_contents("php://input"), TRUE);
@@ -48,6 +59,11 @@ class Categoria extends CI_Controller {
 				]));
 	}
 
+	/**
+	 * Funcion para actualizar el recurso del modelo, con validaciones de la libreria "Form Validation"
+	 * @return Arreglo donde se encuentra el estado de la operación, un mensaje que puede contener los errores de la validación en caso de error
+	 * y el retorno de los datos guardados en el modelo.
+	 **/
 	public function update() {
 		$this->load->library('form_validation');
 		$_POST = json_decode(file_get_contents("php://input"), TRUE);
@@ -83,6 +99,10 @@ class Categoria extends CI_Controller {
 
 	}
 
+	/**
+	 * Funcion que retorna un arreglo de objetos, del recurso del modelo Subcategorias
+	 * @return Arreglo de objetos
+	**/
 	public function subcategoria() {
 		$data = json_decode(file_get_contents("php://input"), TRUE);
 		$models = $this->categoria->where(['padre_id' => $data['categoria']]);
@@ -93,6 +113,11 @@ class Categoria extends CI_Controller {
 				->set_output(json_encode($models));
 	}
 
+	/**
+	 * Funcion que guarda recursos del modelo Subcategoria, tambien se usan funciones de las librerias de "Form Validation"
+	 * @return Arreglo donde se encuentra el estado de la operación, un mensaje que puede contener los errores de la validación en caso de error
+	 * y el retorno de los datos guardados en el modelo.
+	 */
 	public function store_subcategoria() {
 		$this->load->library("form_validation");
 		$_POST = json_decode(file_get_contents("php://input"), TRUE);
@@ -127,6 +152,11 @@ class Categoria extends CI_Controller {
 				]));
 	}
 
+	/**
+	 * Funcion que edita el recurso del modelo de subcategoria, tambien usa funciones de la libreria de "Form Validation"
+	 * @return Arreglo donde se encuentra el estado de la operación, un mensaje que puede contener los errores de la validación en caso de error
+	 * y el retorno de los datos guardados en el modelo.
+	 */
 	public function edit_subcategoria() {
 		$this->load->library('form_validation');
 		$_POST = json_decode(file_get_contents("php://input"), TRUE);
@@ -162,6 +192,10 @@ class Categoria extends CI_Controller {
 				]));
 	}
 
+	/**
+	 * Funcion que retorna un arreglo de los recursos del modelo de Categorias con un formato en particular
+	 * @return Arreglo de objetos que vienen en un formato particular para el uso en Front End 
+	 **/
 	public function get_categorias() {
 		$data = $this->categoria->all();
 		$data = $this->pluck($data, 'nombre', 'id');
@@ -172,6 +206,10 @@ class Categoria extends CI_Controller {
 				->set_output(json_encode($data));
 	}
 
+	/**
+	 * Funcion que retorna un arreglo de los recursos del modelo de Subcategorias con un formato en particular
+	 * @return Arreglo de objetos que vienen en un formato particular para el uso en Front End 
+	 **/
 	public function get_subcategorias($id) {
 		$data = $this->categoria->where(['padre_id' => $id]);
 		$data = $this->pluck($data, 'nombre','id');

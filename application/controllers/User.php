@@ -7,6 +7,7 @@ class User extends CI_Controller {
 		$this->diniz = $this->load->database('diniz', TRUE);
 		$this->op = $this->load->database('operaciones', TRUE);
 		$this->infra = $this->load->database('infra', TRUE);
+		$this->load->database('default');
 	}
 
 	public function index() {
@@ -49,8 +50,9 @@ class User extends CI_Controller {
 			$cef[] = $v['cef'];
 		}
 		$data['cefs'] = implode(',', $cef);
-		$result = $this->infra->query("SELECT * FROM usuario_perfil WHERE noempl = '$empl'");
-		$data['isAdmin'] = ($result->num_rows() > 0) ? ($result->result_array()[0]['perfilid'] == 1) : FALSE;
+		$result = $this->db->query("SELECT * FROM usuario_perfil WHERE noempl = '$empl'");
+		$data['isAdmin'] = ($result->num_rows() > 0) ? ($result->result_array()[0]['perfil_id'] == 1) : FALSE;
+		$data['isGerente'] = ($result->num_rows() > 0) ? ($result->result_array()[0]['perfil_id'] == 3) : FALSE;
 
 		return $this->output
 			->set_header("Access-Control-Allow-Origin: *")

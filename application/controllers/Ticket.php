@@ -8,6 +8,10 @@ class Ticket extends CI_Controller {
 		$this->load->model('ticket_model', 'ticket');
 	}
 
+	/**
+	 * Funcion que retorna un arreglo de los recursos del modelo ticket, el numero de recursos cambia dependiendo del tipo de usuario
+	 * @return Array
+	 **/
 	public function index() {
 		$post = json_decode(file_get_contents("php://input"), TRUE);
 		$data = ($post['isAdmin']) ? $this->ticket->all() : $this->ticket->get_tickets($post['locales']);
@@ -18,6 +22,10 @@ class Ticket extends CI_Controller {
 			->set_output(json_encode($data));
 	}
 
+	/**
+	 * Funcion que retorna un objeto donde se encuentra todos los datos y propiedades del ticket
+	 * @return Object
+	 **/
 	public function show($id) {
 		$this->load->helper('url');
 		$data = $this->ticket->find($id);
@@ -36,6 +44,10 @@ class Ticket extends CI_Controller {
 			->set_output(json_encode($data));
 	}
 
+	/**
+	 * Funcion que guarda las propiedades y recursos del modelo Ticket, hace uso de funciones de la libreria "Form Validation"
+	 * @return Array
+	 **/
 	public function store() {
 		$this->load->library('form_validation');
 
@@ -90,6 +102,10 @@ class Ticket extends CI_Controller {
 
 	}
 
+	/**
+	 * Funcion para cambiar el estado del Ticket de abierto a cerrado
+	 * @return Array
+	 **/
 	public function close() {
 		$this->load->library('form_validation');
 
@@ -138,6 +154,10 @@ class Ticket extends CI_Controller {
 				]));
 	}
 
+	/**
+	 * Funcion que cambia el estado de cancelado del ticket.
+	 * @return Array
+	 **/
 	public function delete($id) {
 		$data = json_decode(file_get_contents("php://input"), TRUE);
 		$data['cancelado'] = 1;
@@ -157,6 +177,10 @@ class Ticket extends CI_Controller {
 			]));
 	}
 
+	/**
+	 * Funcion que cambia el estado del ticket a autorizado.
+	 * @return Array
+	 **/
 	public function autoriza() {
 		$data = json_decode(file_get_contents("php://input"), TRUE);
 		$id = $data['ticket_id'];
@@ -174,6 +198,10 @@ class Ticket extends CI_Controller {
 			]));
 	}
 
+	/**
+	 * Funcion que retorna un arreglo con los recursos del modelo de Ticket con el estatus de cancelado
+	 * @return
+	 **/
 	public function cancelados() {
 		$post = json_decode(file_get_contents("php://input"), TRUE);
 		$data = ($post['isAdmin']) ? $this->ticket->all_cancelados() : $this->ticket->get_tickets_cancelados($post['locales']);
@@ -184,6 +212,10 @@ class Ticket extends CI_Controller {
 			->set_output(json_encode($data));
 	}
 
+	/**
+	 * Funcion que retorna un arreglo de los recursos del modelo Ticket filtrado en base filtro mandados via POST
+	 * @return Array
+	 **/
 	public function filter_data() {
 		$data = $this->input->post();
 		$locales = array_filter(explode(',', $data['locales']));
@@ -205,6 +237,10 @@ class Ticket extends CI_Controller {
 			->set_output(json_encode($model));
 	}
 
+	/**
+	 * Funcion que realiza la carga de la imagen y tambien hace un proceso de reducir la calidad de la imagen para reducir el peso de la imagen, respetando las medidas de la imagen original.
+	 * @return String
+	 **/
 	protected function doUpload($title, $files) {
 		$filename = $files['tmp_name'];
 
@@ -230,6 +266,12 @@ class Ticket extends CI_Controller {
 		return $title;
 	}
 
+	/**
+	 * Funcion que genera un archivo MS Excel con base al arreglo que se pasa como parametro.
+	 * @param Array
+	 * @return Blob | Download
+	 * 
+	 **/
 	protected function CreateExcel($data = []) {
 		$tmpName = "files/export.xlsx";
 		$excelReader = PHPExcel_IOFactory::createReaderForFile($tmpName);
