@@ -47,7 +47,7 @@ class User extends CI_Controller {
 			$result = $this->diniz->query("SELECT ul.no_empl, l.local as cef FROM diniz.usuario_locales ul LEFT JOIN diniz.locales l ON ul.localid = l.id WHERE no_empl = '$empl'");
 		}
 		foreach ($result->result_array() as $v) {
-			$cef[] = $v['cef'];
+			$cef[] = "'".$v['cef']."'";
 		}
 		$data['cefs'] = implode(',', $cef);
 		$result = $this->db->query("SELECT * FROM usuario_perfil WHERE noempl = '$empl'");

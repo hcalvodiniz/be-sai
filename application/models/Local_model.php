@@ -17,7 +17,7 @@ class Local_model extends CI_Model {
 	public function get_locales($list = '') {
 		$this->db->select("id, concat(codigo, ' - ', nombre) as nombre");
 		$this->db->from($this->table);
-		$this->db->where_in('codigo', explode(',', $list));
+		$this->db->where_in('codigo', str_replace("'", "", explode(',', $list)));
 		$result = $this->db->get();
 		return $this->Collection($result);
 	}

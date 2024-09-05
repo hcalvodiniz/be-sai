@@ -80,6 +80,7 @@ class Ticket_model extends CI_Model {
 	}
 
 	public function get_tickets($locales = '') {
+		$locales = str_replace("'", "", $locales);
 		$this->db->select("t.id, pr.razon_social as proveedor, ch.nombre as categoria, c.nombre as subcategoria, l.nombre as local, l.codigo, p.id as color_id, p.nombre as prioridad, p.color, t.fecha_hora, t.fecha_hora_cierre, IF(t.estatus_id = 1, 'Abierto', 'Cerrado') as status, t.autorizado, t.cancelado, t.noempl");
 		$this->db->from('tickets t');
 		$this->db->join('locales l', 't.local_id = l.id', 'left');

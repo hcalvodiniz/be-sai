@@ -218,7 +218,7 @@ class Ticket extends CI_Controller {
 	 **/
 	public function filter_data() {
 		$data = $this->input->post();
-		$locales = array_filter(explode(',', $data['locales']));
+		$locales = array_filter(explode(',', str_replace("'","",$data['locales'])));
 		unset($data['locales']);
 		unset($data['categoria']);
 		$data['estatus_id'] = ($data['estatus_id'] == 'false') ? 0 : 1;

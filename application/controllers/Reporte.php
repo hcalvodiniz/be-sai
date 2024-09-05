@@ -18,6 +18,15 @@ class Reporte extends CI_Controller {
 		if (!empty($post['fecha_inicio']) && !empty($post['fecha_final'])) {
 			$where = "WHERE fecha_hora BETWEEN '".$post['fecha_inicio']." 00:00:00' AND '".$post['fecha_final']." 23:59:59'";
 		}
+		if (empty($where)) {
+			if ($post['isAdmin'] == 'false') {
+				$where = "WHERE l.codigo IN (".$post['cefs'].")";
+			}
+		} else {
+			if ($post['isAdmin'] == 'false') {
+				$where .= " AND l.codigo IN (".$post['cefs'].")";
+			}
+		}
 		switch ($post['filtro']) {
 			case 'prioridad':
 				$query = "SELECT
