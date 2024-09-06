@@ -228,7 +228,7 @@ class Ticket extends CI_Controller {
 		});
 		$model = $this->ticket->filter_data($data, $locales);
 		if(isset($data['export'])){
-			$this->CreateExcel($model);
+			return $this->CreateExcel($model);
 		}
 		return $this->output
 			->set_header("Access-Control-Allow-Origin: *")

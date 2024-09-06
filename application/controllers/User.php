@@ -10,9 +10,14 @@ class User extends CI_Controller {
 		$this->load->database('default');
 	}
 
+	/**
+	 * Funcion para validar sesion, se hace llamado a pn_sesion_con2.php. Que nos trae la informacion del usuario logeado, y hacemos validaciones de tipo de usuario y perfiles
+	 * @return Array
+	 **/
 	public function index() {
 		$data = json_decode(file_get_contents("php://input"), TRUE);
 
+		// Ya que la peticion se va a realizar a un dominio seguro, se generan los parametros para crear el contexto de la peticion.
 		$options = [
 			'http' => [
 				'method' => 'POST',
@@ -25,14 +30,13 @@ class User extends CI_Controller {
 			]
 		];
 
+		// Creamos el contexto y hacemos la peticion.
 		$context = stream_context_create($options);
 		$response = file_get_contents('https://diniz.com.mx/diniz/servicios/services/pn_sesion_con2.php', false, $context);
+		// Obtenemos la respuesta de la peticion.
 		$response = json_decode($response, TRUE);
 		$data = $response[0]['usuarios'];
 		$empl = $data['noempl'];
-		$result = $this->op->query("SELECT * FROM cef_distrital WHERE gerente = '$empl'");
-		$data['isDistrital'] = ($result->num_rows() > 0);
-		$cef = [];
 		if($empl == 'x'){
 			return $this->output
 			->set_header("Access-Control-Allow-Origin: *")
@@ -40,19 +44,23 @@ class User extends CI_Controller {
 			->set_content_type("application/json")
 			->set_output(json_encode([
 				'success' => FALSE,
-				'data' => null
+				'data' => null,
+				'response' => $response
 			]));
 		}
-		if (!$data['isDistrital']) {
-			$result = $this->diniz->query("SELECT ul.no_empl, l.local as cef FROM diniz.usuario_locales ul LEFT JOIN diniz.locales l ON ul.localid = l.id WHERE no_empl = '$empl'");
-		}
+		// Comenzamos validaciones.... Validamos si el usuario pertenece al grupo de Administradores, Distritales o Gerentes
+		$result = $this->db->query("SELECT * FROM usuario_perfil WHERE noempl = '$empl'");
+		$data['isAdmin'] = ($result->num_rows() > 0) ? ($result->result_array()[0]['perfil_id'] == 1) : FALSE;
+		$data['isDistrital'] = ($result->num_rows() > 0) ? ($result->result_array()[0]['perfil_id'] == 2) : FALSE;
+		$data['isGerente'] = ($result->num_rows() > 0) ? ($result->result_array()[0]['perfil_id'] == 3) : FALSE;
+
+		$cef = [];
+		// Obtenemos la lista de CEFs que tiene asignados al usuario.
+		$result = $this->diniz->query("SELECT ul.no_empl, l.local as cef FROM diniz.usuario_locales ul LEFT JOIN diniz.locales l ON ul.localid = l.id WHERE no_empl = '$empl'");
 		foreach ($result->result_array() as $v) {
 			$cef[] = "'".$v['cef']."'";
 		}
 		$data['cefs'] = implode(',', $cef);
-		$result = $this->db->query("SELECT * FROM usuario_perfil WHERE noempl = '$empl'");
-		$data['isAdmin'] = ($result->num_rows() > 0) ? ($result->result_array()[0]['perfil_id'] == 1) : FALSE;
-		$data['isGerente'] = ($result->num_rows() > 0) ? ($result->result_array()[0]['perfil_id'] == 3) : FALSE;
 
 		return $this->output
 			->set_header("Access-Control-Allow-Origin: *")
