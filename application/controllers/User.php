@@ -48,11 +48,12 @@ class User extends CI_Controller {
 				'response' => $response
 			]));
 		}
-		// Comenzamos validaciones.... Validamos si el usuario pertenece al grupo de Administradores, Distritales o Gerentes
+		// Comenzamos validaciones.... Validamos si el usuario pertenece al grupo de Administradores, Distritales, Gerentes o Técnicos
 		$result = $this->db->query("SELECT * FROM usuario_perfil WHERE noempl = '$empl'");
 		$data['isAdmin'] = ($result->num_rows() > 0) ? ($result->result_array()[0]['perfil_id'] == 1) : FALSE;
 		$data['isDistrital'] = ($result->num_rows() > 0) ? ($result->result_array()[0]['perfil_id'] == 2) : FALSE;
 		$data['isGerente'] = ($result->num_rows() > 0) ? ($result->result_array()[0]['perfil_id'] == 3) : FALSE;
+		$data['isTecnico'] = ($result->num_rows() > 0) ? ($result->result_array()[0]['perfil_id'] == 4) : FALSE;
 
 		$cef = [];
 		// Obtenemos la lista de CEFs que tiene asignados al usuario.

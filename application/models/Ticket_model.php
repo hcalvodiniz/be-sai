@@ -9,6 +9,10 @@ class Ticket_model extends CI_Model {
 		$this->diniz = $this->load->database('diniz', TRUE);
 	}
 
+	/**
+	 * Funcion que trae todos los tickets y devuelve los registros en un arreglo
+	 * @return Array
+	 **/
 	public function all() {
 		$sql = "SELECT t.id, t.proveedor_id, pr.razon_social as proveedor, ch.nombre as categoria, c.nombre as subcategoria, l.nombre as local, l.codigo, t.local_id, p.id as color_id, p.nombre as prioridad, p.color, t.fecha_hora, t.fecha_hora_cierre, IF(t.estatus_id = 1, 'Abierto', 'Cerrado') as status, t.autorizado, t.cancelado, t.noempl FROM tickets t 
 			LEFT JOIN locales l ON t.local_id = l.id
@@ -20,6 +24,10 @@ class Ticket_model extends CI_Model {
 		return $this->db->query($sql)->result_array();
 	}
 
+	/**
+	 * Funcion que trae todos los tickets con estatus cancelado y devuelve los registros en un arreglo.
+	 * @return Array
+	 **/
 	public function all_cancelados() {
 		$sql = "SELECT t.id, t.proveedor_id, pr.razon_social as proveedor, ch.nombre as categoria, c.nombre as subcategoria, l.nombre as local, l.codigo, t.local_id, p.id as color_id, p.nombre as prioridad, p.color, t.fecha_hora, t.fecha_hora_cierre, IF(t.estatus_id = 1, 'Abierto', 'Cerrado') as status, t.autorizado, t.cancelado, t.noempl FROM tickets t 
 			LEFT JOIN locales l ON t.local_id = l.id
@@ -31,6 +39,11 @@ class Ticket_model extends CI_Model {
 		return $this->db->query($sql)->result_array();
 	}
 
+	/**
+	 * Funcion que devuelve los datos de un ticket de acuerdo a un id proporcionado.
+	 * @param integer | numeric string
+	 * @return Object
+	 **/
 	public function find($id) {
 		$sql = "SELECT t.id, pr.razon_social as proveedor, ch.nombre as categoria, c.nombre as subcategoria, l.nombre as local, l.codigo, p.id as color_id, p.nombre as prioridad, p.color, t.fecha_hora, t.fecha_hora_cierre, t.estatus_id as status, t.comentario, t.comentario_cierre, t.cancelado, t.empl_cancela FROM tickets t 
 			LEFT JOIN locales l ON t.local_id = l.id
@@ -51,6 +64,11 @@ class Ticket_model extends CI_Model {
 		return $model;
 	}
 
+	/**
+	 * Funcion que devuelve un arreglo de tickets basados en parametros que vienen determinados en el parametro "filters"
+	 * @param $filters Array | $locales Array
+	 * @return Array
+	 **/
 	public function filter_data($filters = [], $locales = []) {
 		$this->db->select("t.id, pr.razon_social as proveedor, ch.nombre as categoria, c.nombre as subcategoria, l.nombre as local, l.codigo, p.id as color_id, p.nombre as prioridad, p.color, t.fecha_hora, t.fecha_hora_cierre, IF(t.estatus_id = 1, 'Abierto', 'Cerrado') as status, t.autorizado, t.cancelado, t.noempl");
 		$this->db->from('tickets t');
@@ -79,6 +97,11 @@ class Ticket_model extends CI_Model {
 		return $result->result_array();
 	}
 
+	/**
+	 * Funcion que devuelve los tickets basado en el string de la variable "$locales"
+	 * @param $locales String
+	 * @return Array
+	 **/
 	public function get_tickets($locales = '') {
 		$locales = str_replace("'", "", $locales);
 		$this->db->select("t.id, pr.razon_social as proveedor, ch.nombre as categoria, c.nombre as subcategoria, l.nombre as local, l.codigo, p.id as color_id, p.nombre as prioridad, p.color, t.fecha_hora, t.fecha_hora_cierre, IF(t.estatus_id = 1, 'Abierto', 'Cerrado') as status, t.autorizado, t.cancelado, t.noempl");
@@ -94,6 +117,11 @@ class Ticket_model extends CI_Model {
 		return $result->result_array();
 	}
 
+	/**
+	 * Funcion que devuelve los tickets cancelados basado en el string de la variable "$locales"
+	 * @param $locales String
+	 * @return Array
+	 **/
 	public function get_tickets_cancelados($locales = '') {
 		$this->db->select("t.id, pr.razon_social as proveedor, ch.nombre as categoria, c.nombre as subcategoria, l.nombre as local, l.codigo, p.id as color_id, p.nombre as prioridad, p.color, t.fecha_hora, t.fecha_hora_cierre, IF(t.estatus_id = 1, 'Abierto', 'Cerrado') as status, t.autorizado, t.cancelado, t.noempl");
 		$this->db->from('tickets t');
@@ -108,6 +136,11 @@ class Ticket_model extends CI_Model {
 		return $result->result_array();
 	}
 
+	/**
+	 * Funcion que obtiene las evidencias con las rutas de los archivos.
+	 * @param $id integer
+	 * @return Array
+	 **/
 	public function get_photos($id) {
 		$this->db->from('evidencia');
 		$this->db->where(['ticket_id' => $id]);
@@ -115,10 +148,21 @@ class Ticket_model extends CI_Model {
 		return $this->collection($result);
 	}
 
+	/**
+	 * Funcion que elimina el registro de la tabla evidencia
+	 * NOTA: esta funcion ya no esta en uso.
+	 * @param $ticket_id integer
+	 * @return boolean
+	 **/
 	public function deleteFiles($ticket_id) {
 		$this->db->delete('evidencia', ['ticket_id' => $ticket_id]);
 	}
 
+	/**
+	 * Funcion que registra las rutas y nombres de archivos de evidencia
+	 * @param Array
+	 * @return booleans
+	 **/
 	public function recordFiles($data) {
 		$this->db->insert('evidencia', $data);
 	}
