@@ -151,7 +151,7 @@ class Prioridad extends CI_Controller {
 	 * Funcion para validar que el valor de la variable es un valor hexadecimal
 	 * @return boolean FALSE | TRUE
 	 **/
-	protected function color_check($value) {
+	public function color_check($value) {
 		$this->load->library('form_validation');
 		if(empty($value)) {
 			$this->form_validation->set_message('color_check', 'El Campo {field} es requerido');
